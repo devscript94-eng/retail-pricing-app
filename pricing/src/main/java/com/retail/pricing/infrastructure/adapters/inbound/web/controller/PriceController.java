@@ -1,8 +1,8 @@
 package com.retail.pricing.infrastructure.adapters.inbound.web.controller;
 
-import com.retail.pricing.application.port.GetPriceUseCase;
+import com.retail.pricing.application.port.in.GetPriceUseCase;
 import com.retail.pricing.domain.model.Price;
-import com.retail.pricing.domain.model.PriceRequest;
+import com.retail.pricing.application.port.in.GetPriceQuery;
 import com.retail.pricing.infrastructure.adapters.inbound.web.dto.PriceResponseDTO;
 import com.retail.pricing.infrastructure.adapters.inbound.web.mapper.PriceWebMapper;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,7 +29,7 @@ public class PriceController {
             @RequestParam Long productId,
             @RequestParam Long brandId) {
 
-        PriceRequest request = new PriceRequest(applicationDate, productId, brandId);
+        GetPriceQuery request = new GetPriceQuery(applicationDate, productId, brandId);
         Price price = getPriceUseCase.execute(request);
 
         return ResponseEntity.ok(priceWebMapper.toDto(price));

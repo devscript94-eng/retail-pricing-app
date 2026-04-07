@@ -1,25 +1,30 @@
 package com.retail.pricing.application.service;
 
-import com.retail.pricing.application.port.GetPriceUseCase;
-import com.retail.pricing.domain.exception.PriceNotFoundException;
+import com.retail.pricing.application.exception.PriceNotFoundException;
+import com.retail.pricing.application.model.ApplicablePriceCriteria;
+import com.retail.pricing.application.port.in.GetPriceQuery;
+import com.retail.pricing.application.port.in.GetPriceUseCase;
+import com.retail.pricing.application.port.out.LoadApplicablePricePort;
 import com.retail.pricing.domain.model.Price;
-import com.retail.pricing.domain.model.PriceRequest;
-import com.retail.pricing.domain.repository.PriceRepository;
-import org.springframework.stereotype.Service;
 
 
-@Service
 public class PriceService implements GetPriceUseCase {
 
-    private final PriceRepository priceRepository;
+    private final LoadApplicablePricePort loadApplicablePricePort;
 
-    public PriceService(PriceRepository priceRepository) {
-        this.priceRepository = priceRepository;
+    public PriceService(LoadApplicablePricePort loadApplicablePricePort) {
+        this.loadApplicablePricePort = loadApplicablePricePort;
     }
 
     @Override
-    public Price execute(PriceRequest request) {
-        return priceRepository.findApplicablePrice(request)
+    public Price execute(GetPriceQuery request) {
+        ApplicablePriceCriteria criteria = new ApplicablePriceCriteria(
+                request.applicationDate(),
+                request.productId(),
+                request.brandId()
+        );
+
+        return loadApplicablePricePort.findApplicablePrice(criteria)
                 .orElseThrow(() -> new PriceNotFoundException(
                         request.brandId(),
                         request.productId(),

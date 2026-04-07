@@ -1,6 +1,6 @@
 package com.retail.pricing.infrastructure.adapters.inbound.web.handler;
 
-import com.retail.pricing.domain.exception.PriceNotFoundException;
+import com.retail.pricing.application.exception.PriceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;

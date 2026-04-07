@@ -1,4 +1,4 @@
-package com.retail.pricing.domain.exception;
+package com.retail.pricing.application.exception;
 
 import java.time.LocalDateTime;
 
