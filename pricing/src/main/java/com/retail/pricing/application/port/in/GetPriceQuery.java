@@ -1,8 +1,8 @@
-package com.retail.pricing.domain.model;
+package com.retail.pricing.application.port.in;
 
 import java.time.LocalDateTime;
 
-public record PriceRequest(
+public record GetPriceQuery(
         LocalDateTime applicationDate,
         Long productId,
         Long brandId
