@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "spring.jpa.hibernate.ddl-auto=none",
         "spring.sql.init.mode=always"
 })
-class JpaPriceRepositoryIntegrationTest {
+class JpaLoadApplicablePricePortIntegrationTest {
 
     @Autowired
     private JpaPriceRepository jpaPriceRepository;
