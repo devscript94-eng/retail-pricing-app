@@ -1,6 +1,11 @@
 package com.retail.pricing.infrastructure.adapters.outbound.persistence.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,9 +40,12 @@ public class PriceEntity {
     private BigDecimal price;
 
     @Column(name = "curr", nullable = false, length = 3)
-    private String curr;
+    private String currency;
 
-    public PriceEntity(Long id, Long brandId, LocalDateTime startDate, LocalDateTime endDate, Integer priceList, Long productId, Integer priority, BigDecimal price, String curr) {
+    protected PriceEntity() {
+    }
+
+    public PriceEntity(Long id, Long brandId, LocalDateTime startDate, LocalDateTime endDate, Integer priceList, Long productId, Integer priority, BigDecimal price, String currency) {
         this.id = id;
         this.brandId = brandId;
         this.startDate = startDate;
@@ -46,10 +54,8 @@ public class PriceEntity {
         this.productId = productId;
         this.priority = priority;
         this.price = price;
-        this.curr = curr;
+        this.currency = currency;
     }
-
-    public PriceEntity() {}
 
     public Long getId() {
         return id;
@@ -115,11 +121,11 @@ public class PriceEntity {
         this.price = price;
     }
 
-    public String getCurr() {
-        return curr;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setCurr(String curr) {
-        this.curr = curr;
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

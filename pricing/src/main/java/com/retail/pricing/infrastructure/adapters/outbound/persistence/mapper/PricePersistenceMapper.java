@@ -9,6 +9,6 @@ import org.mapstruct.Mapping;
 public interface PricePersistenceMapper {
 
     @Mapping(source = "price", target = "amount")
-    @Mapping(source = "curr", target = "currency")
+    @Mapping(source = "currency", target = "currency")
     Price toDomain(PriceEntity entity);
 }

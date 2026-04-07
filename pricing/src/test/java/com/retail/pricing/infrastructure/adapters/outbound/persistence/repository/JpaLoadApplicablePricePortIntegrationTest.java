@@ -22,26 +22,24 @@ class JpaLoadApplicablePricePortIntegrationTest {
     @Test
     void shouldReturnPriceList2At2020_06_14_16_00() {
         Optional<PriceEntity> result =
-                jpaPriceRepository.findFirstByBrandIdAndProductIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
+                jpaPriceRepository.findApplicablePrice(
                         1L,
                         35455L,
-                        LocalDateTime.of(2020, 6, 14, 16, 0),
                         LocalDateTime.of(2020, 6, 14, 16, 0)
                 );
 
         assertThat(result).isPresent();
         assertThat(result.get().getPriceList()).isEqualTo(2);
         assertThat(result.get().getPrice()).isEqualByComparingTo("25.45");
-        assertThat(result.get().getCurr()).isEqualTo("EUR");
+        assertThat(result.get().getCurrency()).isEqualTo("EUR");
     }
 
     @Test
     void shouldReturnPriceList1At2020_06_14_21_00() {
         Optional<PriceEntity> result =
-                jpaPriceRepository.findFirstByBrandIdAndProductIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
+                jpaPriceRepository.findApplicablePrice(
                         1L,
                         35455L,
-                        LocalDateTime.of(2020, 6, 14, 21, 0),
                         LocalDateTime.of(2020, 6, 14, 21, 0)
                 );
 
@@ -53,10 +51,9 @@ class JpaLoadApplicablePricePortIntegrationTest {
     @Test
     void shouldReturnEmptyWhenNoApplicablePriceExists() {
         Optional<PriceEntity> result =
-                jpaPriceRepository.findFirstByBrandIdAndProductIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
+                jpaPriceRepository.findApplicablePrice(
                         1L,
                         99999L,
-                        LocalDateTime.of(2020, 6, 14, 21, 0),
                         LocalDateTime.of(2020, 6, 14, 21, 0)
                 );
 

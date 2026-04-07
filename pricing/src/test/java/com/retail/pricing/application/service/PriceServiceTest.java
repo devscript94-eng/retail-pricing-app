@@ -46,11 +46,7 @@ class PriceServiceTest {
                 "EUR"
         );
 
-        ApplicablePriceCriteria criteria = new ApplicablePriceCriteria(
-                request.applicationDate(),
-                request.productId(),
-                request.brandId()
-        );
+        ApplicablePriceCriteria criteria = ApplicablePriceCriteria.from(request);
 
         when(loadApplicablePricePort.findApplicablePrice(criteria)).thenReturn(Optional.of(expected));
 
@@ -69,11 +65,7 @@ class PriceServiceTest {
                 1L
         );
 
-        ApplicablePriceCriteria criteria = new ApplicablePriceCriteria(
-                request.applicationDate(),
-                request.productId(),
-                request.brandId()
-        );
+        ApplicablePriceCriteria criteria = ApplicablePriceCriteria.from(request);
 
         when(loadApplicablePricePort.findApplicablePrice(criteria)).thenReturn(Optional.empty());
 
