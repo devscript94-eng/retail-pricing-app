@@ -24,10 +24,9 @@ public class LoadApplicablePricePersistenceAdapter implements LoadApplicablePric
     @Override
     public Optional<Price> findApplicablePrice(ApplicablePriceCriteria criteria) {
         return jpaPriceRepository
-                .findFirstByBrandIdAndProductIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
+                .findApplicablePrice(
                         criteria.brandId(),
                         criteria.productId(),
-                        criteria.applicationDate(),
                         criteria.applicationDate()
                 )
                 .map(pricePersistenceMapper::toDomain);

@@ -18,11 +18,7 @@ public class PriceService implements GetPriceUseCase {
 
     @Override
     public Price execute(GetPriceQuery request) {
-        ApplicablePriceCriteria criteria = new ApplicablePriceCriteria(
-                request.applicationDate(),
-                request.productId(),
-                request.brandId()
-        );
+        ApplicablePriceCriteria criteria = ApplicablePriceCriteria.from(request);
 
         return loadApplicablePricePort.findApplicablePrice(criteria)
                 .orElseThrow(() -> new PriceNotFoundException(

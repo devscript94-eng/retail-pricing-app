@@ -1,13 +1,19 @@
 package com.retail.pricing.infrastructure.adapters.inbound.web.controller;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.stream.Stream;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
@@ -25,73 +31,24 @@ class PriceApiIntegrationTest {
 
     private static final String APPLICABLE_PRICE_URI = "/api/v1/products/{productId}/brands/{brandId}/prices/applicable";
 
-    @Test
-    void test1_shouldReturnPriceList1At2020_06_14_10_00() throws Exception {
+    @ParameterizedTest(name = "[{index}] applicationDate={0}, expectedPriceList={1}")
+    @MethodSource("applicablePriceCases")
+    void shouldReturnApplicablePrice(
+            String applicationDate,
+            int expectedPriceList,
+            String expectedStartDate,
+            String expectedEndDate,
+            double expectedFinalPrice
+    ) throws Exception {
         mockMvc.perform(get(APPLICABLE_PRICE_URI, 35455, 1)
-                        .param("applicationDate", "2020-06-14T10:00:00"))
+                        .param("applicationDate", applicationDate))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(35455))
                 .andExpect(jsonPath("$.brandId").value(1))
-                .andExpect(jsonPath("$.priceList").value(1))
-                .andExpect(jsonPath("$.startDate").value("2020-06-14T00:00:00"))
-                .andExpect(jsonPath("$.endDate").value("2020-12-31T23:59:59"))
-                .andExpect(jsonPath("$.finalPrice").value(35.50))
-                .andExpect(jsonPath("$.currency").value("EUR"));
-    }
-
-    @Test
-    void test2_shouldReturnPriceList2At2020_06_14_16_00() throws Exception {
-        mockMvc.perform(get(APPLICABLE_PRICE_URI, 35455, 1)
-                        .param("applicationDate", "2020-06-14T16:00:00"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productId").value(35455))
-                .andExpect(jsonPath("$.brandId").value(1))
-                .andExpect(jsonPath("$.priceList").value(2))
-                .andExpect(jsonPath("$.startDate").value("2020-06-14T15:00:00"))
-                .andExpect(jsonPath("$.endDate").value("2020-06-14T18:30:00"))
-                .andExpect(jsonPath("$.finalPrice").value(25.45))
-                .andExpect(jsonPath("$.currency").value("EUR"));
-    }
-
-    @Test
-    void test3_shouldReturnPriceList1At2020_06_14_21_00() throws Exception {
-        mockMvc.perform(get(APPLICABLE_PRICE_URI, 35455, 1)
-                        .param("applicationDate", "2020-06-14T21:00:00"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productId").value(35455))
-                .andExpect(jsonPath("$.brandId").value(1))
-                .andExpect(jsonPath("$.priceList").value(1))
-                .andExpect(jsonPath("$.startDate").value("2020-06-14T00:00:00"))
-                .andExpect(jsonPath("$.endDate").value("2020-12-31T23:59:59"))
-                .andExpect(jsonPath("$.finalPrice").value(35.50))
-                .andExpect(jsonPath("$.currency").value("EUR"));
-    }
-
-    @Test
-    void test4_shouldReturnPriceList3At2020_06_15_10_00() throws Exception {
-        mockMvc.perform(get(APPLICABLE_PRICE_URI, 35455, 1)
-                        .param("applicationDate", "2020-06-15T10:00:00"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productId").value(35455))
-                .andExpect(jsonPath("$.brandId").value(1))
-                .andExpect(jsonPath("$.priceList").value(3))
-                .andExpect(jsonPath("$.startDate").value("2020-06-15T00:00:00"))
-                .andExpect(jsonPath("$.endDate").value("2020-06-15T11:00:00"))
-                .andExpect(jsonPath("$.finalPrice").value(30.50))
-                .andExpect(jsonPath("$.currency").value("EUR"));
-    }
-
-    @Test
-    void test5_shouldReturnPriceList4At2020_06_16_21_00() throws Exception {
-        mockMvc.perform(get(APPLICABLE_PRICE_URI, 35455, 1)
-                        .param("applicationDate", "2020-06-16T21:00:00"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productId").value(35455))
-                .andExpect(jsonPath("$.brandId").value(1))
-                .andExpect(jsonPath("$.priceList").value(4))
-                .andExpect(jsonPath("$.startDate").value("2020-06-15T16:00:00"))
-                .andExpect(jsonPath("$.endDate").value("2020-12-31T23:59:59"))
-                .andExpect(jsonPath("$.finalPrice").value(38.95))
+                .andExpect(jsonPath("$.priceList").value(expectedPriceList))
+                .andExpect(jsonPath("$.startDate").value(expectedStartDate))
+                .andExpect(jsonPath("$.endDate").value(expectedEndDate))
+                .andExpect(jsonPath("$.finalPrice").value(expectedFinalPrice))
                 .andExpect(jsonPath("$.currency").value("EUR"));
     }
 
@@ -102,5 +59,15 @@ class PriceApiIntegrationTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.title").value("Applicable price not found"))
                 .andExpect(jsonPath("$.status").value(404));
+    }
+
+    private static Stream<Arguments> applicablePriceCases() {
+        return Stream.of(
+                Arguments.of("2020-06-14T10:00:00", 1, "2020-06-14T00:00:00", "2020-12-31T23:59:59", 35.50),
+                Arguments.of("2020-06-14T16:00:00", 2, "2020-06-14T15:00:00", "2020-06-14T18:30:00", 25.45),
+                Arguments.of("2020-06-14T21:00:00", 1, "2020-06-14T00:00:00", "2020-12-31T23:59:59", 35.50),
+                Arguments.of("2020-06-15T10:00:00", 3, "2020-06-15T00:00:00", "2020-06-15T11:00:00", 30.50),
+                Arguments.of("2020-06-16T21:00:00", 4, "2020-06-15T16:00:00", "2020-12-31T23:59:59", 38.95)
+        );
     }
 }
