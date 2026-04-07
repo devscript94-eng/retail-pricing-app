@@ -23,12 +23,12 @@ class PriceApiIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private static final String APPLICABLE_PRICE_URI = "/api/v1/products/{productId}/brands/{brandId}/prices/applicable";
+
     @Test
     void test1_shouldReturnPriceList1At2020_06_14_10_00() throws Exception {
-        mockMvc.perform(get("/api/v1/prices")
-                        .param("applicationDate", "2020-06-14T10:00:00")
-                        .param("productId", "35455")
-                        .param("brandId", "1"))
+        mockMvc.perform(get(APPLICABLE_PRICE_URI, 35455, 1)
+                        .param("applicationDate", "2020-06-14T10:00:00"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(35455))
                 .andExpect(jsonPath("$.brandId").value(1))
@@ -41,10 +41,8 @@ class PriceApiIntegrationTest {
 
     @Test
     void test2_shouldReturnPriceList2At2020_06_14_16_00() throws Exception {
-        mockMvc.perform(get("/api/v1/prices")
-                        .param("applicationDate", "2020-06-14T16:00:00")
-                        .param("productId", "35455")
-                        .param("brandId", "1"))
+        mockMvc.perform(get(APPLICABLE_PRICE_URI, 35455, 1)
+                        .param("applicationDate", "2020-06-14T16:00:00"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(35455))
                 .andExpect(jsonPath("$.brandId").value(1))
@@ -57,10 +55,8 @@ class PriceApiIntegrationTest {
 
     @Test
     void test3_shouldReturnPriceList1At2020_06_14_21_00() throws Exception {
-        mockMvc.perform(get("/api/v1/prices")
-                        .param("applicationDate", "2020-06-14T21:00:00")
-                        .param("productId", "35455")
-                        .param("brandId", "1"))
+        mockMvc.perform(get(APPLICABLE_PRICE_URI, 35455, 1)
+                        .param("applicationDate", "2020-06-14T21:00:00"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(35455))
                 .andExpect(jsonPath("$.brandId").value(1))
@@ -73,10 +69,8 @@ class PriceApiIntegrationTest {
 
     @Test
     void test4_shouldReturnPriceList3At2020_06_15_10_00() throws Exception {
-        mockMvc.perform(get("/api/v1/prices")
-                        .param("applicationDate", "2020-06-15T10:00:00")
-                        .param("productId", "35455")
-                        .param("brandId", "1"))
+        mockMvc.perform(get(APPLICABLE_PRICE_URI, 35455, 1)
+                        .param("applicationDate", "2020-06-15T10:00:00"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(35455))
                 .andExpect(jsonPath("$.brandId").value(1))
@@ -89,10 +83,8 @@ class PriceApiIntegrationTest {
 
     @Test
     void test5_shouldReturnPriceList4At2020_06_16_21_00() throws Exception {
-        mockMvc.perform(get("/api/v1/prices")
-                        .param("applicationDate", "2020-06-16T21:00:00")
-                        .param("productId", "35455")
-                        .param("brandId", "1"))
+        mockMvc.perform(get(APPLICABLE_PRICE_URI, 35455, 1)
+                        .param("applicationDate", "2020-06-16T21:00:00"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(35455))
                 .andExpect(jsonPath("$.brandId").value(1))
@@ -105,10 +97,8 @@ class PriceApiIntegrationTest {
 
     @Test
     void shouldReturn404WhenNoApplicablePriceExists() throws Exception {
-        mockMvc.perform(get("/api/v1/prices")
-                        .param("applicationDate", "2020-06-14T10:00:00")
-                        .param("productId", "99999")
-                        .param("brandId", "1"))
+        mockMvc.perform(get(APPLICABLE_PRICE_URI, 99999, 1)
+                        .param("applicationDate", "2020-06-14T10:00:00"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.title").value("Applicable price not found"))
                 .andExpect(jsonPath("$.status").value(404));
