@@ -31,9 +31,9 @@ public class PriceController {
     public ResponseEntity<PriceResponseDTO> getApplicablePrice(
             @PathVariable Long productId,
             @PathVariable Long brandId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime applicationDate) {
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date) {
 
-        GetPriceQuery request = new GetPriceQuery(applicationDate, productId, brandId);
+        GetPriceQuery request = new GetPriceQuery(date, productId, brandId);
         Price price = getPriceUseCase.execute(request);
 
         return ResponseEntity.ok(priceWebMapper.toDto(price));

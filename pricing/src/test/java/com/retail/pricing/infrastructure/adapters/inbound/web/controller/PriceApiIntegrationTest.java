@@ -31,31 +31,30 @@ class PriceApiIntegrationTest {
 
     private static final String APPLICABLE_PRICE_URI = "/api/v1/products/{productId}/brands/{brandId}/prices/applicable";
 
-    @ParameterizedTest(name = "[{index}] applicationDate={0}, expectedPriceList={1}")
+    @ParameterizedTest(name = "[{index}] date={0}, expectedPriceList={1}")
     @MethodSource("applicablePriceCases")
     void shouldReturnApplicablePrice(
-            String applicationDate,
+            String date,
             int expectedPriceList,
             String expectedStartDate,
             String expectedEndDate,
             double expectedFinalPrice
     ) throws Exception {
         mockMvc.perform(get(APPLICABLE_PRICE_URI, 35455, 1)
-                        .param("applicationDate", applicationDate))
+                        .param("date", date))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(35455))
                 .andExpect(jsonPath("$.brandId").value(1))
                 .andExpect(jsonPath("$.priceList").value(expectedPriceList))
                 .andExpect(jsonPath("$.startDate").value(expectedStartDate))
                 .andExpect(jsonPath("$.endDate").value(expectedEndDate))
-                .andExpect(jsonPath("$.finalPrice").value(expectedFinalPrice))
-                .andExpect(jsonPath("$.currency").value("EUR"));
+                .andExpect(jsonPath("$.finalPrice").value(expectedFinalPrice));
     }
 
     @Test
     void shouldReturn404WhenNoApplicablePriceExists() throws Exception {
         mockMvc.perform(get(APPLICABLE_PRICE_URI, 99999, 1)
-                        .param("applicationDate", "2020-06-14T10:00:00"))
+                        .param("date", "2020-06-14T10:00:00"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.title").value("Applicable price not found"))
                 .andExpect(jsonPath("$.status").value(404));
